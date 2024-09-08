@@ -185,10 +185,10 @@ const RandomUsers = () => {
           </div>
         </div>
 
-        <div className='mt-16 lg:mt-24 grid gap-5 px-4 sm:px-10 items-center'>
-          <div className='grid grid-cols-2 sm:grid-cols-6 items-center justify-center' style={{ gridTemplateColumns: '3fr 1fr 2fr 1fr 1fr 1fr' }}>
-            <div className='w-full h-[50px] sm:h-[60px]'></div>
-            <div>
+        <div className='mt-16 lg:mt-24 grid gap-5 px-4 sm:px-10 items-center '>
+          <div className='grid grid-cols-2 sm:grid-cols-6 items-center justify-center lg:visible invisible ' style={{ gridTemplateColumns: '3fr 1fr 2fr 1fr 1fr 1fr' }}>
+            <div className='w-full h-[50px] sm:h-[60px] '></div>
+            <div className=''>
               <h1 className='text-sm'>Risk score</h1>
               <h5 className='text-gray-500 text-xs'>{timeFrame === dropdownOptions[1][0] ? dropdownOptions[1][0] : ""}</h5>
             </div>

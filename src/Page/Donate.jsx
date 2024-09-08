@@ -208,7 +208,7 @@ const Donate = () => {
           onClick={handleDonateClick}
           className="w-full md:w-36 h-12 bg-green-600 text-white font-bold rounded-lg shadow-lg hover:bg-green-500 transition duration-300"
         >
-          Donate Now
+          Deposit now
         </button>
 
         <br />

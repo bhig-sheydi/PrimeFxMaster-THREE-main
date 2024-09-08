@@ -39,6 +39,7 @@ function App() {
 
 function AppContent() {
   const { isNavbarVisible } = useMyContext(); // Use the context to access isNavbarVisible
+  const [visible,setVisible] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track authentication status
 
   useEffect(() => {
@@ -83,7 +84,7 @@ function AppContent() {
           {isLoggedIn ? (
             <Nav2 />
           ) : (
-            isNavbarVisible && <Nav scrollToSection={scrollToSection} />
+            visible == false && <Nav scrollToSection={scrollToSection} />
           )}{" "}
           {/* Conditionally render Nav2 or Nav */}
         </BrowserRouter>

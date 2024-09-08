@@ -211,7 +211,10 @@ ul .a:hover {
     }
 
     .x{
-        margin-top: 2rem;
+        margin-top: 10rem;
+        width: 60px;
+        font-size: larger;
+        box-shadow: 1px 1px 1px 1px black;
     }
     .back-drop img
     {

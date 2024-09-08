@@ -27,11 +27,11 @@ const Nav = ({ scrollToSection }) => {
       
       <img src={nav} className='logo' alt="Logo" />
       
-      <ul className={`nav-links ${isNavOpen ? 'open' : ''}`}>
+      <ul className={`nav-links ${isNavOpen ? 'open' : ''} `}>
        {/* <div  className='back-drop'>
        <img src={nav} alt="" />
        </div> */}
-      <button className='x' onClick={toggleNav}>x</button>
+      <button className='x w-16' onClick={toggleNav}>x</button>
 
         <li>
           <button className="a"><Link to="/">Home</Link></button>
