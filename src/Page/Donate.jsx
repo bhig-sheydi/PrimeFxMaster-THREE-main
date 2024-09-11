@@ -89,12 +89,12 @@ const Donate = () => {
         amount: selectedAmount,
         frequency: selectedFrequency,
         paymentMethod: payment,
-        userName: userId,
-        userId: userNmae
+        userId: userId,
+        userName: userNmae
       };
 
       // Send donation info to Formspree
-      const url = "https://formspree.io/f/xjvndknd"; // Replace with your Formspree endpoint
+      const url = "https://formspree.io/f/xyzgagdo"; // Replace with your Formspree endpoint
       const response = await fetch(url, {
         method: "POST",
         headers: {

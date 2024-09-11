@@ -23,17 +23,19 @@ const auth = getAuth();
   const dataRef = useRef([]);
   const [chartType, setChartType] = useState('candlestick');
   const [balance, setBalance] = useState(() => {
-    const storedBalance = localStorage.getItem('balance');
+    const storedBalance = localStorage.getItem('balance2');
     return storedBalance ? parseFloat(storedBalance) : 0; // Default to 0 if not set
   });
   const db = getFirestore();
   const [tradeHistory, setTradeHistory] = useState([]);
-  const [openTrades, setOpenTrades] = useState(JSON.parse(localStorage.getItem('openTrades')) || []);
+  const [openTrades, setOpenTrades] = useState(JSON.parse(localStorage.getItem('openTrades2')) || []);
   const markersRef = useRef([]); // Track markers
   const currentUser = useAuthState();
   const [cryptos, setCryptos] = useState([]);
   const [prevPrices, setPrevPrices] = useState({});
   const [lotSize, setLotSize] = useState(0.1); // Initial lot size
+  const [dialog1 , setDialog1]= useState(0)
+  const [] = useState()
 
   useEffect(()=>{
 
@@ -41,14 +43,19 @@ const auth = getAuth();
       {
           setShow(true)
       }
+      
+
+
+      console.log(balance)
+
   }, [])
 
   useEffect(() => {
-    localStorage.setItem('balance', balance.toFixed(2));
+    localStorage.setItem('balance2', balance.toFixed(2));
   }, [balance]);
 
   useEffect(() => {
-    localStorage.setItem('openTrades', JSON.stringify(openTrades));
+    localStorage.setItem('openTrades2', JSON.stringify(openTrades));
   }, [openTrades]);
 
   useEffect(() => {
@@ -74,37 +81,6 @@ const auth = getAuth();
     return (Math.random() - 0.5) * 2 * maxSlippage;
   };
   
-  const placeOrder = (crypto, action) => {
-    if (!seriesRef.current) return; // Ensure series exists
-  
-    const lastDataPoint = dataRef.current[dataRef.current.length - 1];
-    const currentPrice = lastDataPoint.close;
-    const tradeAmount = 100 * lotSize; // Amount per trade adjusted by lot size
-    const slippage = generateSlippage(); // Use realistic slippage
-  
-    const newTrade = {
-      action,
-      amount: tradeAmount,
-      openPrice: parseFloat(currentPrice) + slippage,
-      time: lastDataPoint.time,
-      floatingPL: 0, // Initialize floatingPL
-      crypto: crypto.name, // Store the name of the cryptocurrency
-      cryptoImage: crypto.image, // Store the image of the cryptocurrency
-    };
-  
-    setOpenTrades([...openTrades, newTrade]);
-  
-    // Add marker to indicate the trade on the chart
-    markersRef.current.push({
-      time: lastDataPoint.time,
-      position: action === 'buy' ? 'belowBar' : 'aboveBar',
-      color: action === 'buy' ? '#43a047' : '#ef5350',
-      shape: 'arrowUp',
-      text: `${action.toUpperCase()} ${crypto.name} @ ${(parseFloat(currentPrice) + slippage).toFixed(2)}`,
-    });
-  
-    seriesRef.current.setMarkers(markersRef.current);
-  };
   
   useEffect(() => {
     const cryptoList = [
@@ -158,6 +134,7 @@ const auth = getAuth();
 
     fetchCryptoData();
 
+
     const interval = setInterval(() => {
       setCryptos(prevCryptos => {
         const updatedCryptos = prevCryptos.map(crypto => {
@@ -203,11 +180,80 @@ const auth = getAuth();
   
 
 
-
-
+  const placeOrder = async (crypto, action) => {
+    if (!seriesRef.current) return; // Ensure series exists
+  
+    const lastDataPoint = dataRef.current[dataRef.current.length - 1];
+    const currentPrice = lastDataPoint.close;
+    const tradeAmount = 100 * lotSize; // Amount per trade adjusted by lot size
+    const slippage = generateSlippage(); // Use realistic slippage
+  
+    const user = auth.currentUser;
+    if (!user) {
+      alert('Please log in to update your balance.');
+      return;
+    }
+  
+    try {
+      const userDocRef = doc(db, "users", user.uid, "accounts", "Real");
+      const userDoc = await getDoc(userDocRef); // Add await here
+      if (!userDoc.exists()) {
+        alert('User data not found.');
+        return;
+      }
+  
+      const userData = userDoc.data();
+      console.log('User document data:', userData);
+  
+      // Fetch demo account data for balance update
+      const demoAccountData = await fetchDemoAccountData(user.uid); // Add await here
+      if (!demoAccountData) {
+        console.error('Demo account data not found.');
+        alert('Demo account data not found.');
+        return;
+      }
+  
+      const firebaseBalance = Number(demoAccountData.balance);
+      console.log('Demo account data:', demoAccountData);
+  
+      // Continue with the trade process
+      if (tradeAmount < firebaseBalance) {
+        const newTrade = {
+          action,
+          amount: tradeAmount,
+          openPrice: parseFloat(currentPrice) + slippage,
+          time: lastDataPoint.time,
+          floatingPL: 0, // Initialize floatingPL
+          crypto: crypto.name, // Store the name of the cryptocurrency
+          cryptoImage: crypto.image, // Store the image of the cryptocurrency
+        };
+  
+        setOpenTrades([...openTrades, newTrade]);
+  
+        // Add marker to indicate the trade on the chart
+        markersRef.current.push({
+          time: lastDataPoint.time,
+          position: action === 'buy' ? 'belowBar' : 'aboveBar',
+          color: action === 'buy' ? '#43a047' : '#ef5350',
+          shape: 'arrowUp',
+          text: `${action.toUpperCase()} ${crypto.name} @ ${(parseFloat(currentPrice) + slippage).toFixed(2)}`,
+        });
+  
+        seriesRef.current.setMarkers(markersRef.current);
+  
+      } else {
+          alert("Reduce your lot size to match your balance or Fund Your Account , Thank You! ")
+      }
+  
+    } catch (error) {
+      console.error('Error placing order:', error);
+      alert('An error occurred while placing the order.');
+    }
+  };
+  
   // Store open trades in local storage
   useEffect(() => {
-    localStorage.setItem('openTrades', JSON.stringify(openTrades));
+    localStorage.setItem('openTrades2', JSON.stringify(openTrades));
   }, [openTrades]);
 
   // Handle trade action (buy/sell)
@@ -219,7 +265,7 @@ const auth = getAuth();
       ? (currentPrice - trade.openPrice) * trade.amount
       : (trade.openPrice - currentPrice) * trade.amount;
   
-    const newBalance = balance + tradeResult;
+    const newBalance =  tradeResult;
     const newTradeHistory = [
       ...tradeHistory,
       {
@@ -335,6 +381,8 @@ const auth = getAuth();
       const newBalance = firebaseBalance + Number(balance); // Ensure 'balance' is a number
   
       console.log('Updating balance from', firebaseBalance, 'to', newBalance);
+
+            
   
       await updateDoc(userDocRef, { balance: newBalance });
       alert('Balance updated successfully!');
@@ -342,6 +390,11 @@ const auth = getAuth();
       console.error('Error updating balance: ', error);
       alert('Failed to update balance.');
     }
+
+
+
+
+
   };
   
   
@@ -493,8 +546,9 @@ const auth = getAuth();
 
 
           </div>
-          <div style={{ lineHeight: "0px" }}>
-            <button className='bg-black text-white rounded-xl h-5 w-8 text-xs p-0'>Real</button>
+          <div style={{ lineHeight: "0px" }} className='flex items-center justify-center  gap-2'>
+            <button className='bg-black text-white rounded-xl h-5 w-8 text-xs p-0'>Demo</button>
+            <span className='flex gap-3'>{ "Profit " + balance}</span>
           </div>
           
         </div>
@@ -579,7 +633,7 @@ const auth = getAuth();
                     <li key={index} style={{ color: trade.floatingPL > 0 ? 'green' : 'red' }} className='flex justify-between items-center'>
                       <img src={trade.cryptoImage} alt={trade.crypto} style={{ width: '20px', height: '20px', marginRight: '8px' }} />
                       {trade.crypto} {trade.action} ${trade.amount.toFixed(2)} at ${trade.openPrice.toFixed(2)} - Floating P&L: {(trade.floatingPL || 0).toFixed(2)}
-                      <button onClick={() => { closeTrade(trade, dataRef.current[dataRef.current.length - 1].close), updateFirebaseBalance() }} className='bg-green-600 text-xs'>Close Trade</button>
+                      <button onClick={() => { closeTrade(trade, dataRef.current[dataRef.current.length - 1].close) , updateFirebaseBalance() }} className='bg-green-600 text-xs'>Close Trade</button>
                     </li>
                   ))}
                 </ul>

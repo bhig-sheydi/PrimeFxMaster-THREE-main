@@ -15,7 +15,7 @@ const Nav = ({ scrollToSection }) => {
   };
 
   const openWhatsApp = () => {
-    const phoneNumber = '2349056557410'; // International format
+    const phoneNumber = '2348051203286'; // International format
     const url = `https://wa.me/${phoneNumber}`;
     window.open(url, '_blank');
   };

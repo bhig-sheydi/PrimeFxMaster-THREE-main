@@ -13,12 +13,6 @@ import Signup from "./Components/Signup";
 import { MyContextProvider, useMyContext } from "./Components/Mycontext";
 import { auth } from "./config/firebase";
 import Nav2 from "./Components/Nav2";
-import HomeMain from "./Components/HomeMain";
-import TradingAccount from "./Components/TradingAccount";
-import CreateAccount from "./Components/CreateAccount";
-import Promotions from "./Components/Promotions";
-import RandomUser from "./Components/RandomUser";
-import Footer from "./Components/Footer";
 import DashBoard from "./Components/Nav/DashBoard";
 import Chart from "./Components/Chart";
 import VerifyData from "./debuging/Verify";
@@ -28,6 +22,12 @@ import Withdrawal from "./Components/Withdraw";
 import ScrollToTop from "./Components/ScrollToTop";
 import TermsAndConditions from "./Components/TermAndConditions";
 import Donate from "./Page/Donate";
+import TradingAccount from "./Components/TradingAccount";
+import CreateAccount from "./Components/CreateAccount";
+import Promotions from "./Components/Promotions";
+import RandomUser from "./Components/RandomUser";
+import Footer from "./Components/Footer";
+import PrivateRoute from "./Components/PrivateRoutes"; // Import PrivateRoute
 
 function App() {
   return (
@@ -38,14 +38,13 @@ function App() {
 }
 
 function AppContent() {
-  const { isNavbarVisible } = useMyContext(); // Use the context to access isNavbarVisible
-  const [visible,setVisible] = useState(false)
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track authentication status
+  const { isNavbarVisible } = useMyContext();
+  const [visible, setVisible] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    // Monitor authentication status
     const unsubscribe = auth.onAuthStateChanged((user) => {
-      setIsLoggedIn(user);
+      setIsLoggedIn(!!user); // Convert user object to boolean
     });
 
     return () => unsubscribe();
@@ -60,33 +59,107 @@ function AppContent() {
 
   return (
     <div>
-      <div className={`all ${isLoggedIn ? "flex   overflow-hidden " : ""}`}>
+      <div className={`all ${isLoggedIn ? "flex overflow-hidden" : ""}`}>
         <BrowserRouter>
           <ScrollToTop />
           <Routes>
-            <Route path="/" element={isLoggedIn ? <DashBoard /> : <Home />} />
+            <Route
+              path="/"
+              element={isLoggedIn ? <DashBoard /> : <Home />}
+            />
             <Route path="/about" element={<About />} />
             <Route path="/workings" element={<HowItWorks />} />
             <Route path="/faqs" element={<Faqs />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            <Route path="/tradingAcc" element={<TradingAccount />} />
-            <Route path="/CreateAccount" element={<CreateAccount />} />
-            <Route path="/promo" element={<Promotions />} />
-            <Route path="/CopyTrading" element={<RandomUser />} />
-            <Route path="/trade" element={<Chart />} />
-            <Route path="/realTrade" element={<ChartReal />} />
-            <Route path="/Admin" element={<Admin />} />
-            <Route path="/v" element={<Withdrawal />} />
-            <Route path="/donate" element={<Donate />} />
-            <Route path="/TermsAndCondition" element={<TermsAndConditions />} />
+
+            {/* Private Routes */}
+            <Route
+              path="/tradingAcc"
+              element={
+                <PrivateRoute>
+                  <TradingAccount />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/CreateAccount"
+              element={
+                <PrivateRoute>
+                  <CreateAccount />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/promo"
+              element={
+                <PrivateRoute>
+                  <Promotions />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/CopyTrading"
+              element={
+                <PrivateRoute>
+                  <RandomUser />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/trade"
+              element={
+                <PrivateRoute>
+                  <Chart />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/realTrade"
+              element={
+                <PrivateRoute>
+                  <ChartReal />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/Admin"
+              element={
+                <PrivateRoute>
+                  <Admin />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/v"
+              element={
+                <PrivateRoute>
+                  <Withdrawal />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/donate"
+              element={
+                <PrivateRoute>
+                  <Donate />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/TermsAndCondition"
+              element={
+                <PrivateRoute>
+                  <TermsAndConditions />
+                </PrivateRoute>
+              }
+            />
           </Routes>
           {isLoggedIn ? (
             <Nav2 />
           ) : (
             visible == false && <Nav scrollToSection={scrollToSection} />
-          )}{" "}
-          {/* Conditionally render Nav2 or Nav */}
+          )}
         </BrowserRouter>
       </div>
     </div>

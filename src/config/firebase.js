@@ -14,13 +14,13 @@ import { useState, useEffect } from "react";
 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAG0foGPkVTzWXIhdEbkIbDYAKNDW2G4x4",
-  authDomain: "primefx-e80c4.firebaseapp.com",
-  projectId: "primefx-e80c4",
-  storageBucket: "primefx-e80c4.appspot.com",
-  messagingSenderId: "717712428715",
-  appId: "1:717712428715:web:08438c77a78b279781f1ee",
-  measurementId: "G-2R1SR3L4DK"
+  apiKey: "AIzaSyAl_wMkyxtNxjFd_APe_6RrjmhgfZyl58o",
+  authDomain: "primefx-62b6b.firebaseapp.com",
+  projectId: "primefx-62b6b",
+  storageBucket: "primefx-62b6b.appspot.com",
+  messagingSenderId: "186319031566",
+  appId: "1:186319031566:web:65ec5996e42e6ffc631b5f",
+  measurementId: "G-V3BF6H0P6C"
 };
 
 // Initialize Firebase
