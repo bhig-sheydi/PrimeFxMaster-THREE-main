@@ -13,6 +13,9 @@ export const MyContextProvider = ({ children }) => {
   const [traderExp , setTraderExp] = useState("ex")
   const [submit , setsubmit] = useState("submit")
   const [id2 , setId2] = useState(0)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+
  
 
   
@@ -70,7 +73,9 @@ export const MyContextProvider = ({ children }) => {
       submit,
       setsubmit, 
       setId2 ,
-      id2
+      id2,
+      isLoggedIn,
+      setIsLoggedIn
     }}>
       {children}
     </MyContext.Provider>
