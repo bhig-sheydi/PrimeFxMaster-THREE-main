@@ -1,21 +1,29 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth, GoogleAuthProvider, EmailAuthProvider, createUserWithEmailAndPassword, signInWithPopup, onAuthStateChanged } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 import { useState, useEffect } from "react";
 
-// Use environment variables with Vite
+
+
+
+
+
+
+
+
+
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
+  apiKey: "AIzaSyAl_wMkyxtNxjFd_APe_6RrjmhgfZyl58o",
+  authDomain: "primefx-62b6b.firebaseapp.com",
+  projectId: "primefx-62b6b",
+  storageBucket: "primefx-62b6b.appspot.com",
+  messagingSenderId: "186319031566",
+  appId: "1:186319031566:web:65ec5996e42e6ffc631b5f",
+  measurementId: "G-V3BF6H0P6C"
 };
 
-
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 
